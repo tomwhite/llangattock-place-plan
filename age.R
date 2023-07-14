@@ -1,14 +1,13 @@
 library(tidyverse)
 
-# Output areas that we are interested in
-llangattock_area <- c("W00002467", "W00002466", "W00002465")
+source("init.R")
 
 # Age by five-year age bands
 
 age_2021 <-
   read_csv("data/census2021-ts007a-oa.csv") %>%
-  filter(`geography code` %in% llangattock_area) %>%
-  mutate(area = "Llangattock", year=2021) %>%
+  filter(`geography code` %in% area) %>%
+  mutate(area = area_name, year=2021) %>%
   select(-date, -geography, -`geography code`, -`Age: Total`) %>%
   rename(
     `0-4`=`Age: Aged 4 years and under`,
@@ -40,8 +39,8 @@ age_2021 <-
 
 age_2011 <-
   read_csv("data/age_2011.csv") %>%
-  filter(`geography code` %in% llangattock_area) %>%
-  mutate(area = "Llangattock", year=2011) %>%
+  filter(`geography code` %in% area) %>%
+  mutate(area = area_name, year=2011) %>%
   select(-date, -geography, -`geography code`, -`Rural Urban`, -`Age: All usual residents; measures: Value`, -`Age: Mean Age; measures: Value`, -`Age: Median Age; measures: Value`) %>%
   rename(
     `0-4`=`Age: Age 0 to 4; measures: Value`,
@@ -97,11 +96,10 @@ median <- s + (e - s) * (med - (c - r)) / r
 age_2021 <- age_2021 %>%
   mutate(median_age = median)
 
-write_csv(age_2011, "data/results/ages-2011.csv")
-write_csv(age_2021, "data/results/ages-2021.csv")
+write_csv(age_2011, paste("data", "results", tolower(area_name), "ages-2011.csv", sep = "/"))
+write_csv(age_2021, paste("data", "results", tolower(area_name), "ages-2021.csv", sep = "/"))
 
 ages <- bind_rows(age_2011, age_2021)
 
-write_csv(ages, "data/results/ages.csv")
-
+write_csv(ages, paste("data", "results", tolower(area_name), "ages.csv", sep = "/"))
 

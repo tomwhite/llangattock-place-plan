@@ -1,11 +1,13 @@
 library(tidyverse)
 
+source("init.R")
+
 # Cars or vans
 
 cars_2021 <-
   read_csv("data/TS045-2021-4-filtered-2023-05-14T17_05_31Z.csv") %>%
-  filter(`Output Areas Code` %in% llangattock_area) %>%
-  mutate(area = "Llangattock", year=2021) %>%
+  filter(`Output Areas Code` %in% area) %>%
+  mutate(area = area_name, year=2021) %>%
   mutate(
     cars = if_else(
       `Car or van availability (5 categories) Code` < 0,
@@ -28,8 +30,8 @@ cars_2021 <-
 
 cars_2011 <-
   read_csv("data/cars_2011.csv") %>%
-  filter(`geography code` %in% llangattock_area) %>%
-  mutate(area = "Llangattock", year=2011) %>%
+  filter(`geography code` %in% area) %>%
+  mutate(area = area_name, year=2011) %>%
   group_by(area, year) %>%
   summarise(
     cars = sum(`Cars: sum of all cars or vans in the area; measures: Value`),
@@ -39,5 +41,4 @@ cars_2011 <-
 
 cars <- bind_rows(cars_2011, cars_2021)
 
-write_csv(cars, "data/results/cars.csv")
-
+write_csv(cars, paste("data", "results", tolower(area_name), "cars.csv", sep = "/"))
