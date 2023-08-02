@@ -46,6 +46,8 @@ https://www.nomisweb.co.uk/census/2011/ks102ew
 Household composition doesn't have a breakdown by number of people
 https://www.nomisweb.co.uk/census/2011/ks105ew
 
+It does have number of one-person households, so we can pull that out for comparison.
+
 ### Total number of households
 
 - Dataset ID: TS041
@@ -58,6 +60,45 @@ https://www.ons.gov.uk/datasets/TS041/editions/2021/versions/3/filter-outputs/94
 Household spaces - also includes number of households with no usual residents
 
 https://www.nomisweb.co.uk/census/2011/qs417ew
+
+### Accommodation type
+
+- Dataset ID: TS044
+- Area type: Output Areas
+
+https://www.ons.gov.uk/datasets/TS044/editions/2021/versions/4/filter-outputs/f0f1d5e2-49f3-4ada-bbaf-77b45fa8da1b#get-data
+
+2011
+
+Doesn't compare easily with 2021, so haven't included.
+
+### Number of bedrooms
+
+2021 Census data
+
+- Dataset ID: TS050
+- Area type: Output Areas
+
+https://www.ons.gov.uk/datasets/TS050/editions/2021/versions/4/filter-outputs/1402de62-4514-49d6-8587-7e0e67337dbc#get-data
+
+2011 Census data
+
+https://www.nomisweb.co.uk/census/2011/ks404ew
+
+This only has the average number of bedrooms, not a breakdown by each number.
+
+### Tenure
+
+2021 Census data
+
+- Dataset ID: TS054
+- Area type: Output Areas
+
+https://www.ons.gov.uk/datasets/TS054/editions/2021/versions/4/filter-outputs/07a70786-e857-47ed-804a-ad3970a5646c#get-data
+
+2011 Census data
+
+https://www.nomisweb.co.uk/census/2011/ks402ew
 
 ### Car and van availability
 

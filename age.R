@@ -4,7 +4,7 @@ source("init.R")
 
 # Age by five-year age bands
 
-age_2021 <-
+raw_age_2021 <-
   read_csv("data/census2021-ts007a-oa.csv") %>%
   filter(`geography code` %in% area) %>%
   mutate(area = area_name, year=2021) %>%
@@ -28,16 +28,19 @@ age_2021 <-
     `75-79`=`Age: Aged 75 to 79 years`,
     `80-84`=`Age: Aged 80 to 84 years`,
     `85+`=`Age: Aged 85 years and over`,
-    ) %>%
+  ) %>%
   group_by(area, year) %>%
-  summarize_if(is.numeric, sum, na.rm=TRUE) %>%
+  summarize_if(is.numeric, sum, na.rm=TRUE)
+
+age_2021 <-
+  raw_age_2021 %>%
   pivot_longer(!c(area, year), names_to = "age", values_to = "residents") %>%
   mutate(start_age = as.numeric(str_extract(age, "[^-+]+"))) %>%
   mutate(end_age = lead(start_age, default=90)) %>%
   mutate(residents_normalised = ((residents * 5) / (end_age - start_age))) %>%
   mutate(residents_cumulative = cumsum(residents))
 
-age_2011 <-
+raw_age_2011 <-
   read_csv("data/age_2011.csv") %>%
   filter(`geography code` %in% area) %>%
   mutate(area = area_name, year=2011) %>%
@@ -62,14 +65,10 @@ age_2011 <-
   ) %>%
   group_by(area, year) %>%
   summarize_if(is.numeric, sum, na.rm=TRUE) %>%
-  ungroup() %>%
-  # rebin to match 2021
-  # mutate(
-  #   `5-9` = `5-7` + `8-9`,
-  #   `15-19` = `15` + `16-17` + `18-19`,
-  #   `85+` = `85-89` + `90+`
-  # ) %>%
-  # select(c(area, year, `0-4`, `5-9`, `10-14`, `15-19`, `20-24`, `25-29`, `30-44`, `45-59`, `60-64`, `65-74`, `75-84`, `85+`)) %>%
+  ungroup()
+  
+age_2011 <-
+  raw_age_2011 %>%
   pivot_longer(!c(area, year), names_to = "age", values_to = "residents") %>%
   mutate(start_age = as.numeric(str_extract(age, "[^-+]+"))) %>%
   mutate(end_age = lead(start_age, default=95)) %>%
@@ -103,3 +102,39 @@ ages <- bind_rows(age_2011, age_2021)
 
 write_csv(ages, paste("data", "results", tolower(area_name), "ages.csv", sep = "/"))
 
+# Age proportions
+
+age_proportions_2021 <-
+  raw_age_2021 %>%
+  mutate(
+    `Under 15` = `0-4` + `5-9` + `10-14`,
+    `15-64` = `15-19` + `20-24` + `25-29` + `30-34` + `35-39` + `40-44` + `45-49` + `50-54` + `55-59` + `60-64`,
+    `Over 65` = `65-69` + `70-74` + `75-79` + `80-84` + `85+`,
+    `Total` = `Under 15` + `15-64` + `Over 65`
+  ) %>%
+  mutate(
+    `Under 15` = 100 * `Under 15` / Total,
+    `15-64` = 100 * `15-64` / Total,
+    `Over 65` = 100 * `Over 65` / Total,
+  ) %>%
+  select(area, year, `Under 15`, `15-64`, `Over 65`, `Total`)
+
+
+age_proportions_2011 <-
+  raw_age_2011 %>%
+  mutate(
+   `Under 15` = `0-4` + `5-7` + `8-9` + `10-14`,
+   `15-64` = `15` + `16-17` + `18-19` + `20-24` + `25-29` + `30-44` + `45-59` + `60-64`,
+   `Over 65` = `65-74` + `75-84` + `85-89` + `90+`,
+   `Total` = `Under 15` + `15-64` + `Over 65`
+  ) %>%
+  mutate(
+    `Under 15` = 100 * `Under 15` / Total,
+    `15-64` = 100 * `15-64` / Total,
+    `Over 65` = 100 * `Over 65` / Total,
+  ) %>%
+  select(area, year, `Under 15`, `15-64`, `Over 65`, `Total`)
+
+age_proportions <- bind_rows(age_proportions_2011, age_proportions_2021)
+
+write_csv(age_proportions, paste("data", "results", tolower(area_name), "age_proportions.csv", sep = "/"))
