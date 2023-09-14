@@ -18,7 +18,8 @@ write_xlsx(
     "accommodation type" = accommodation_type,
     "bedrooms" = bedrooms,
     "tenure" = tenure,
-    "house prices" = house_prices
+    "house prices" = house_prices,
+    "housing waiting list" = housing_waiting_list
   ),
   "data/results/categories/housing.xls"
 )

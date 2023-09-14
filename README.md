@@ -127,3 +127,11 @@ https://www.ons.gov.uk/datasets/TS066/editions/2021/versions/5/filter-outputs/12
 2011
 
 https://www.nomisweb.co.uk/census/2011/qs601ew
+
+## House Prices
+
+HPSSA dataset 36 Number of sales of residential properties for wards
+HPSSA dataset 37 Median price paid for wards
+HPSSA dataset 38 Mean price paid for wards
+HPSSA dataset 39 Lower quartile price paid for wards
+HPSSA dataset 40 Tenth percentile price paid for wards
