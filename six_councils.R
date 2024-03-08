@@ -52,8 +52,29 @@ households_six_councils <-
   summarise(Households = sum(Observation)) %>%
   ungroup()
 
-residents_households_six_councils <-
-  residents_six_councils %>%
-  inner_join(households_six_councils)
+# Number of cars
 
-write_csv(residents_households_six_councils, paste("data", "results", "residents_households_six_councils.csv", sep = "/"))
+cars_all <-
+  read_csv("data/TS045-2021-4-filtered-2023-05-14T17_05_31Z.csv")
+
+# check there are no codes that are not in the dataset
+# this should return 0 rows
+six_councils %>%
+  anti_join(cars_all, by = c("Code" = "Output Areas Code"))
+
+cars_six_councils <-
+  cars_all %>%
+  inner_join(six_councils, by = c("Output Areas Code" = "Code")) %>%
+  filter(`Car or van availability (5 categories) Code` >= 0) %>%
+  select(`Area name`, `Car or van availability (5 categories)`, Observation) %>%
+  group_by(`Area name`, `Car or van availability (5 categories)`) %>%
+  summarise(Count = sum(Observation)) %>%
+  ungroup() %>%
+  pivot_wider(names_from = `Car or van availability (5 categories)`, values_from = Count)
+
+residents_households_cars_six_councils <-
+  residents_six_councils %>%
+  inner_join(households_six_councils) %>%
+  inner_join(cars_six_councils)
+
+write_csv(residents_households_cars_six_councils, paste("data", "results", "residents_households_cars_six_councils.csv", sep = "/"))
